@@ -16,4 +16,5 @@ public interface IPQuery {
     Set<String> getIPsForEvent(Event event, Date after, Date before);
 
     Set<String> getIPsForStatus(Status status, Date after, Date before);
+
 }
