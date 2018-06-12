@@ -15,5 +15,10 @@
     <orderEntry type="library" name="com.google.guava:guava:19.0" level="application" />
     <orderEntry type="library" name="org.apache.commons:commons-collections4:4.0" level="application" />
     <orderEntry type="library" name="junit:junit:4.12" level="application" />
+    <orderEntry type="library" name="org.apache.httpcomponents.httpcore_4.4.9" level="application" />
+    <orderEntry type="library" name="commons-logging-1.2" level="application" />
+    <orderEntry type="library" name="dsn1" level="application" />
+    <orderEntry type="library" name="jsoup-1.9.2" level="project" />
+    <orderEntry type="library" name="jsoup-1.9.2-sources" level="application" />
   </component>
 </module>
