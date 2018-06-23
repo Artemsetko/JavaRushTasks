@@ -43,7 +43,9 @@ public class CurrencyManipulator {
     }
 
     public boolean isAmountAvailable(int expectedAmount) {
-        return expectedAmount <= getTotalAmount();
+        if (expectedAmount > 0)
+            return expectedAmount <= getTotalAmount();
+        return false;
     }
 
     public Map<Integer, Integer> withdrawAmount(int expectedAmount) throws NotEnoughMoneyException {
@@ -65,37 +67,47 @@ public class CurrencyManipulator {
             }
         });
 
-        for (Integer aList : list) {
-            int key = aList;
-            int value = temp.get(key);
-            while (true) {
-                if (sum < key || value <= 0) {
-                    temp.put(key, value);
-                    break;
+        // outer:
+        do {
+            for (Integer aList : list) {
+                int key = aList;
+                int value = temp.get(key);
+                while (true) {
+                    if (sum < key || value <= 0) {
+                        temp.put(key, value);
+                        // sum = expectedAmount;
+                        //  continue outer;
+                        break;
+                    }
+                    sum -= key;
+                    value--;
+
+                    if (result.containsKey(key))
+                        result.put(key, result.get(key) + 1);
+                    else
+                        result.put(key, 1);
                 }
-                sum -= key;
-                value--;
-
-                if (result.containsKey(key))
-                    result.put(key, result.get(key) + 1);
-                else
-                    result.put(key, 1);
             }
-        }
+            if (sum == 0) break;
+            sum = expectedAmount;
+            result.clear();
+            temp.clear();
+            temp.putAll(denominations);
+            list.remove(0);
+        } while (list.size() != 0);
 
-        if (sum > 0)
+
+        if (sum > 0 && list.size() == 0)
             throw new NotEnoughMoneyException();
         else {
-            for (Map.Entry<Integer, Integer> pair : result.entrySet())
-                ConsoleHelper.writeMessage("\t" + pair.getKey() + " - " + pair.getValue());
+           /* for (Map.Entry<Integer, Integer> pair : result.entrySet())
+                ConsoleHelper.writeMessage(pair.getKey() + " - " + pair.getValue());*/
 
-            denominations.clear();
-            denominations.putAll(temp);
-            ConsoleHelper.writeMessage("Transaction complete successfully");
+            denominations = new HashMap<>(temp);
+         //   ConsoleHelper.writeMessage("Transaction complete successfully");
         }
         return result;
     }
-
 
 
 }

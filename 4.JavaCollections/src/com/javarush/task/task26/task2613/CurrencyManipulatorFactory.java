@@ -13,9 +13,9 @@ public class CurrencyManipulatorFactory {
     }
 
     public static CurrencyManipulator getManipulatorByCurrencyCode(String currencyCode) {
-        if (!map.containsKey(currencyCode.toUpperCase()))
-            map.put(currencyCode, new CurrencyManipulator(currencyCode.toUpperCase()));
-        return map.get(currencyCode.toUpperCase());
+        if (!map.containsKey(currencyCode))
+            map.put(currencyCode, new CurrencyManipulator(currencyCode));
+        return map.get(currencyCode);
     }
 
     public static Collection<CurrencyManipulator> getAllCurrencyManipulators(){

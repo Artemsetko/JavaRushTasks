@@ -1,25 +1,41 @@
 package com.javarush.task.task26.task2613.command;
 
+import com.javarush.task.task26.task2613.CashMachine;
 import com.javarush.task.task26.task2613.ConsoleHelper;
 import com.javarush.task.task26.task2613.CurrencyManipulator;
 import com.javarush.task.task26.task2613.CurrencyManipulatorFactory;
+import com.javarush.task.task26.task2613.exception.InterruptOperationException;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.ResourceBundle;
 
 class InfoCommand implements Command {
 
-    @Override
-    public void execute() {
-        boolean money = false;
+    private ResourceBundle res = ResourceBundle.getBundle(CashMachine.RESOURCE_PATH + "info_en");
 
-        for (CurrencyManipulator currencyManipulator : CurrencyManipulatorFactory.getAllCurrencyManipulators()) {
-            if (currencyManipulator.hasMoney()) {
-                if (currencyManipulator.getTotalAmount() > 0) {
-                    ConsoleHelper.writeMessage(currencyManipulator.getCurrencyCode() + " - " + currencyManipulator.getTotalAmount());
-                    money = true;
+    @Override
+    public void execute() throws InterruptOperationException {
+
+        ConsoleHelper.writeMessage(res.getString("before"));
+        Collection map = CurrencyManipulatorFactory.getAllCurrencyManipulators();
+        if (map.size()==0 || map.isEmpty())
+            ConsoleHelper.writeMessage(res.getString("no.money"));
+        else {
+            int count = 0;
+            for (Iterator<CurrencyManipulator> iterator = map.iterator(); iterator.hasNext(); )
+            {
+                CurrencyManipulator pair =  iterator.next();
+                if (pair.hasMoney())
+                {
+                    count++;
+                    ConsoleHelper.writeMessage( pair.getCurrencyCode()+ " - " + pair.getTotalAmount());
                 }
             }
+            if (count == 0)
+                ConsoleHelper.writeMessage(res.getString("no.money"));
         }
-        if (!money) {
-            ConsoleHelper.writeMessage("No money available.");
-        }
+
     }
+
 }

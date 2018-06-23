@@ -21,7 +21,7 @@ public class Solution {
 
             JavaRush javaRush = new JavaRush();
             //initialize users field for the javaRush object here - инициализируйте поле users для объекта javaRush тут
-            SimpleDateFormat simpleDateFFormat = new SimpleDateFormat("dd MM yyyy");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MM yyyy");
             User user = new User();
             user.setFirstName("Bob");
             user.setLastName("Sinclair");

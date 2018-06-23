@@ -5,8 +5,11 @@ import com.javarush.task.task26.task2613.exception.InterruptOperationException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ResourceBundle;
 
 public class ConsoleHelper {
+
+    private static ResourceBundle res = ResourceBundle.getBundle(CashMachine.RESOURCE_PATH + "common_en");
 
     private static BufferedReader bis = new BufferedReader(new InputStreamReader(System.in));
 
@@ -14,65 +17,90 @@ public class ConsoleHelper {
         System.out.println(message);
     }
 
+
     public static String readString() throws InterruptOperationException {
-        String input = null;
-        try {
-            input = bis.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        String message = "";
+        try
+        {
+            message = bis.readLine();
+            if (message.equalsIgnoreCase(res.getString("operation.EXIT")))
+                throw new InterruptOperationException();
         }
-        if(input.equalsIgnoreCase("EXIT"))
-            throw new InterruptOperationException();
-        return input;
+        catch (IOException ignored)
+        {
+        }
+        return message;
     }
+
 
     public static String askCurrencyCode() throws InterruptOperationException {
-        writeMessage("Введите код валюты");
-        String code = readString();
-        while (code.length() != 3) {
-            writeMessage("Данные некорректны. Повторите ввод");
-            code = readString();
-        }
-        return code.toUpperCase();
-    }
 
-    public static String[] getValidTwoDigits(String currencyCode) throws InterruptOperationException {
-        writeMessage("Ввести два целых положительных числа. Первое число - номинал, второе - количество банкнот.");
-        String[] inputTwoDigits;
+        String s;
         while (true) {
-            inputTwoDigits = readString().split(" ");
+            writeMessage(res.getString("choose.currency.code"));
+            s = readString();
+            if (s.length() != 3) {
+                writeMessage(res.getString("invalid.data"));
+            }
+            else {
+                s = s.toUpperCase();
+                break;
 
-            int nominal = 0;
-            int total = 0;
-
-            try {
-                nominal = Integer.parseInt(inputTwoDigits[0]);
-                total = Integer.parseInt(inputTwoDigits[1]);
-            } catch (Exception e) {
-                writeMessage("Error, repeat again");
-                continue;
             }
 
-            if (nominal <= 0 || total <= 0) {
-                writeMessage("Error, repeat again");
+        }
+        return s;
+    }
+
+
+    public static String[] getValidTwoDigits(String currencyCode) throws InterruptOperationException {
+
+        String[] array;
+        writeMessage(res.getString("choose.denomination.and.count.format"));
+
+        while (true)
+        {
+            String s = readString();
+            array = s.split(" ");
+            int k;
+            int l;
+            try
+            {
+                k = Integer.parseInt(array[0]);
+                l = Integer.parseInt(array[1]);
+            }
+            catch (Exception e)
+            {
+                writeMessage(res.getString("invalid.data"));
+                continue;
+            }
+            if (k <= 0 || l <= 0 || array.length > 2)
+            {
+                writeMessage(res.getString("invalid.data"));
                 continue;
             }
             break;
         }
-        return inputTwoDigits;
+        return array;
     }
 
-    public static Operation askOperation() throws InterruptOperationException {
-        do {
-            writeMessage("Choice operation:\n1) INFO\n2) DEPOSIT\n3) WITHDRAW\n4) EXIT");
-            try {
-                String input = readString();
-                return Operation.getAllowableOperationByOrdinal(Integer.parseInt(input));
-            } catch (IllegalArgumentException e){
-                writeMessage("Input wrong, try again");
-                continue;
-            }
-        } while (true);
 
+    public static Operation askOperation() throws InterruptOperationException {
+
+        while (true)
+        {
+            String line = readString();
+            if (Integer.parseInt(line) > 0 && Integer.parseInt(line) < 5)
+                return Operation.getAllowableOperationByOrdinal(Integer.parseInt(line));
+            else
+                writeMessage(res.getString("invalid.data"));
+        }
+    }
+
+
+    public static void printExitMessage() {
+
+        ConsoleHelper.writeMessage(res.getString("the.end"));
     }
 }
